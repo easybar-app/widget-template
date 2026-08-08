@@ -1,0 +1,13 @@
+manifest_version = 1
+name = "example-widget"
+version = "0.1.0"
+kind = "widget"
+description = "A minimal stateful EasyBar widget used as a project template."
+license = "MIT"
+minimum_easybar_version = "0.44.0"
+entrypoint = "widget.lua"
+readme = "README.md"
+categories = ["utilities"]
+
+[repository]
+url = "https://github.com/easybar-app/widget-template"

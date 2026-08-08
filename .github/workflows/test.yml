@@ -1,0 +1,27 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: macos-26
+    steps:
+      - name: Checkout widget
+        uses: actions/checkout@v7
+
+      - name: Install Lua
+        run: HOMEBREW_NO_AUTO_UPDATE=1 brew install lua
+
+      - name: Validate and test
+        run: make check
+
+      - name: Verify release archive
+        run: make package
