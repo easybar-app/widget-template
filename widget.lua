@@ -3,6 +3,7 @@
 local enabled = false
 local widget
 
+--- Renders the icon and label from the widget's current enabled state.
 local function render()
 	local color = enabled and easybar.theme.ref.success or easybar.theme.ref.muted
 

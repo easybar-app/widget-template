@@ -18,6 +18,12 @@ widget:
 Package names use lowercase letters, digits, and hyphens. Keep `package.toml` at the repository
 root so both local installs and release archives have the layout EasyBar expects.
 
+The starter widget deliberately keeps state in memory and uses only the core EasyBar API. Add
+package dependencies under `[dependencies]` in `package.toml`; import an exported Lua module with
+`local module = require("module")`. Put images and other runtime files under `assets/` and resolve
+them with `easybar.asset("assets/file.svg")`. The package builder includes declared Lua files and
+the complete `assets/` directory in release archives.
+
 ## Develop locally
 
 The checks require Lua 5.5 and Python 3.11 or newer. StyLua is optional unless you run the format
@@ -46,6 +52,15 @@ easybar config reload
 Editor diagnostics use EasyBar's generated API definition at
 `~/.local/share/easybar/easybar_api.lua`. Open this repository as the Lua workspace so
 `.luarc.json` is applied.
+
+The included regression test supplies a small fake EasyBar API, loads `widget.lua` in an isolated
+environment, and invokes subscribed events directly. Extend that fake alongside the widget when
+you use more EasyBar APIs, and assert user-visible state changes rather than internal helper
+details.
+
+`make package` writes a deterministic archive and checksum to `dist/`. Inspecting that archive
+before the first release is a useful way to catch missing entrypoints, exports, assets, or README
+files.
 
 ## Release
 

@@ -4,6 +4,7 @@ local state = {
 	nodes = {},
 }
 
+--- Creates a minimal EasyBar node double for widget regression tests.
 local function new_node(name, props)
 	local node = {
 		name = name,
@@ -11,10 +12,12 @@ local function new_node(name, props)
 		subscriptions = {},
 	}
 
+	--- Replaces the node properties as EasyBar would during rendering.
 	function node:set(next_props)
 		self.props = next_props
 	end
 
+	--- Records an event callback so the test can invoke it directly.
 	function node:subscribe(event, callback)
 		self.subscriptions[event] = callback
 	end
@@ -40,6 +43,7 @@ local easybar = {
 	},
 }
 
+--- Creates and records a unique item node for the widget under test.
 function easybar.add(kind, name, props)
 	assert(kind == easybar.kind.item, "example widget must create an item")
 	assert(state.nodes[name] == nil, "duplicate node: " .. name)
