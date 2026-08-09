@@ -2,7 +2,7 @@
 
 A standalone starting point for an installable [EasyBar](https://easybar.dev) Lua widget. The
 package can be installed directly from a checkout or release archive; publishing it in the
-[official registry](https://github.com/easybar-app/widget-registry) is optional.
+[official registry](https://github.com/easybar-app/registry) is optional.
 
 ## Start a widget
 
@@ -89,7 +89,7 @@ and prints ready-to-copy registry metadata in the workflow summary.
 A registry entry makes the widget discoverable through `easybar widgets search` and installable by
 name. It is not required for direct installation. After the first release, contribute
 `packages/<package>.toml` to the
-[widget registry](https://github.com/easybar-app/widget-registry) using the archive URL and SHA-256
+[widget registry](https://github.com/easybar-app/registry) using the archive URL and SHA-256
 from the release workflow.
 
 The complete manifest and contribution guidance lives in the
