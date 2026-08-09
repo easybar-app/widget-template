@@ -113,12 +113,14 @@ machine-specific output.
 Use the repository targets rather than reimplementing their checks:
 
 ```sh
-make fmt-lua
+make fmt
 make check
 make lint-lua
 make package
 ```
 
+- `make fmt` formats Lua, Markdown, YAML, JSON, and TOML files. Use a target such as `make fmt-lua`
+  or `make fmt-md` when only one format needs updating.
 - `make check` validates the manifest, parses every Lua file with Lua 5.5, and runs the regression
   test.
 - `make lint-lua` verifies StyLua formatting. Run `make fmt-lua` before it when Lua changed.
