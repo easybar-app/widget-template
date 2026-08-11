@@ -55,15 +55,15 @@ def safe_file(relative: object, label: str) -> Path:
 
 def validate_manifest() -> dict:
     manifest = load_manifest()
-    if manifest.get("manifest_version") != 1:
-        fail("manifest_version must be 1")
+    if manifest.get("manifest_version") != 2:
+        fail("manifest_version must be 2")
     name = manifest.get("name")
     if not isinstance(name, str) or not PACKAGE_NAME.fullmatch(name):
         fail(f"invalid package name: {name!r}")
     if manifest.get("kind") not in {"widget", "library"}:
         fail("kind must be widget or library")
 
-    for field in ("version", "minimum_easybar_version"):
+    for field in ("version", "minimum_easybar_kit_version"):
         value = manifest.get(field)
         if not isinstance(value, str) or not SEMVER.fullmatch(value):
             fail(f"invalid {field}: {value!r}")

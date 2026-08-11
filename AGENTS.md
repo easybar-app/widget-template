@@ -31,10 +31,10 @@ remain unintentionally.
 
 `package.toml` is the source of truth for packaging and compatibility:
 
-- Keep `manifest_version = 1`, `kind = "widget"`, and `package.toml` at the repository root.
+- Keep `manifest_version = 2`, `kind = "widget"`, and `package.toml` at the repository root.
 - Keep package names lowercase and hyphen-separated. Follow semantic versioning.
 - Set `entrypoint` to the actual widget entrypoint and `readme` to the package README.
-- Set `minimum_easybar_version` to the oldest EasyBar version whose APIs the widget actually uses.
+- Set `minimum_easybar_kit_version` to the oldest EasyBarKit version whose APIs the widget actually uses.
 - Every non-test Lua file must be the entrypoint or a module declared under `[exports]`.
 - Declare other EasyBar packages under `[dependencies]` with an exact or caret semantic-version
   constraint. The package name and the module passed to `require(...)` are not necessarily the
