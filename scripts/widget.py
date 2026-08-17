@@ -33,15 +33,18 @@ BRANCH = "main"
 
 
 def fail(message: str) -> None:
+    """Exit with a validation error."""
     raise ValueError(message)
 
 
 def load_manifest() -> dict:
+    """Load the generator manifest."""
     with MANIFEST_PATH.open("rb") as handle:
         return tomllib.load(handle)
 
 
 def safe_file(relative: object, label: str) -> Path:
+    """Resolve and validate a package-relative file."""
     if not isinstance(relative, str) or not relative:
         fail(f"{label} must be a non-empty string")
     path = Path(relative)
@@ -54,6 +57,7 @@ def safe_file(relative: object, label: str) -> Path:
 
 
 def validate_manifest() -> dict:
+    """Validate package metadata and declared files."""
     manifest = load_manifest()
     if manifest.get("manifest_version") != 2:
         fail("manifest_version must be 2")
@@ -128,11 +132,13 @@ def validate_manifest() -> dict:
 
 
 def command_validate(_: argparse.Namespace) -> None:
+    """Handle the validate command."""
     manifest = validate_manifest()
     print(f"Validated EasyBar package {manifest['name']}.")
 
 
 def archive_info(name: str, size: int) -> tarfile.TarInfo:
+    """Create normalized metadata for an archive entry."""
     info = tarfile.TarInfo(name)
     info.size = size
     info.mode = 0o644
@@ -145,6 +151,7 @@ def archive_info(name: str, size: int) -> tarfile.TarInfo:
 
 
 def package_files(manifest: dict) -> list[tuple[str, Path]]:
+    """Collect files included in a release archive."""
     selected = {
         MANIFEST_PATH,
         safe_file(manifest.get("readme"), "readme"),
@@ -168,6 +175,7 @@ def package_files(manifest: dict) -> list[tuple[str, Path]]:
 
 
 def write_archive(files: list[tuple[str, Path]], archive_path: Path) -> str:
+    """Write a deterministic package archive."""
     archive_path.parent.mkdir(parents=True, exist_ok=True)
     with archive_path.open("wb") as raw_output:
         with gzip.GzipFile(filename="", mode="wb", fileobj=raw_output, mtime=0) as compressed:
@@ -183,6 +191,7 @@ def write_archive(files: list[tuple[str, Path]], archive_path: Path) -> str:
 
 
 def command_package(args: argparse.Namespace) -> None:
+    """Handle the package command."""
     manifest = validate_manifest()
     name = manifest["name"]
     version = manifest["version"]
@@ -198,6 +207,7 @@ def command_package(args: argparse.Namespace) -> None:
 
 
 def bumped_version(version: str, level: str) -> str:
+    """Return a version with the requested component bumped."""
     match = STABLE_SEMVER.fullmatch(version)
     if match is None:
         fail(f"version must be stable semantic version: {version}")
@@ -212,6 +222,7 @@ def bumped_version(version: str, level: str) -> str:
 
 
 def command_bump(args: argparse.Namespace) -> None:
+    """Handle the bump command."""
     manifest = validate_manifest()
     current = manifest["version"]
     updated = bumped_version(current, args.level)
@@ -223,6 +234,7 @@ def command_bump(args: argparse.Namespace) -> None:
 
 
 def git(*arguments: str, check: bool = True) -> subprocess.CompletedProcess[str]:
+    """Run Git with captured text output."""
     return subprocess.run(
         ["git", *arguments],
         cwd=ROOT,
@@ -233,6 +245,7 @@ def git(*arguments: str, check: bool = True) -> subprocess.CompletedProcess[str]
 
 
 def release_preflight(tag: str) -> str:
+    """Validate repository state before a release."""
     if git("status", "--porcelain=v1", "--untracked-files=all").stdout.strip():
         fail("worktree must be clean before creating a release")
     branch = git("branch", "--show-current").stdout.strip()
@@ -254,6 +267,7 @@ def release_preflight(tag: str) -> str:
 
 
 def command_release(args: argparse.Namespace) -> None:
+    """Handle the release command."""
     manifest = validate_manifest()
     name = manifest["name"]
     version = manifest["version"]
@@ -272,6 +286,7 @@ def command_release(args: argparse.Namespace) -> None:
 
 
 def parser() -> argparse.ArgumentParser:
+    """Build the command-line argument parser."""
     root = argparse.ArgumentParser()
     commands = root.add_subparsers(dest="command", required=True)
 
@@ -294,6 +309,7 @@ def parser() -> argparse.ArgumentParser:
 
 
 def main() -> int:
+    """Run the command-line entry point."""
     args = parser().parse_args()
     try:
         args.handler(args)
